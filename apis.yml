@@ -1,0 +1,59 @@
+name: SpectrumOutage API
+description: >-
+  Community-powered REST API for live Spectrum internet, TV, and phone outage data across the US. Independent tracker,
+  not affiliated with Charter Communications or Spectrum. Provides aggregate stats, outage reports, city/state/ZIP
+  status, and map pin data.
+url: https://spectrumoutage-api.apievangelist.com/apis.yml
+created: '2026-07-17'
+modified: '2026-07-17'
+specificationVersion: '0.21'
+tags:
+  - spectrum
+  - outage
+  - internet
+  - tv
+  - phone
+  - monitoring
+  - status
+  - zip-code
+  - telecom
+  - isp
+  - network-status
+  - crowdsourced
+apis:
+  - name: SpectrumOutage API v1
+    description: >-
+      REST API for live Spectrum internet, TV, and phone outage data across the US. Bearer API key required on all
+      endpoints. Endpoints include /stats, /reports, /cities/{slug}, /states, /zip/{zip}, and /map.
+    humanURL: https://api.spectrumoutage.us
+    baseURL: https://spectrumoutage.us/api/v1
+    tags:
+      - spectrum
+      - outage
+      - internet
+      - tv
+      - phone
+      - monitoring
+      - status
+      - zip-code
+      - telecom
+      - isp
+      - network-status
+      - crowdsourced
+    properties:
+      - type: OpenAPI
+        url: https://api.spectrumoutage.us/openapi.yaml
+      - type: Documentation
+        url: https://api.spectrumoutage.us
+      - type: LLMSTxt
+        url: https://api.spectrumoutage.us/llm.txt
+      - type: LLMSTxt
+        url: https://spectrumoutage.us/llm.txt
+maintainers:
+  - FN: SpectrumOutage
+    url: https://spectrumoutage.us/contact
+generated:
+  by: apis.io/add
+  model: claude-opus-4-8
+  confidence: 90
+  at: '2026-07-17T11:26:02.897Z'
