@@ -1,0 +1,124 @@
+generated: '2026-08-11'
+method: derived
+source: openapi/spectrumoutage-api-openapi.yml
+summary:
+  entity_count: 4
+  enum_count: 2
+  envelope_count: 8
+  note: >-
+    The domain has one true record type — OutageReport — and everything else is an aggregation over it,
+    sliced by geography (ZIP, city, state) or by time (dashboard timeline, map range). Location is not a
+    first-class resource: there is no City or State entity with an id, only slug-addressed views, and the
+    city/state/map response payloads are declared as untyped `object` in the spec, so their internal shape
+    is not machine-readable.
+entities:
+  - name: OutageReport
+    kind: record
+    schema: components/schemas/OutageReport
+    identifier: id
+    id_type: integer
+    id_prefix: null
+    fields:
+      - {name: id, type: integer, role: identifier}
+      - {name: zipCode, type: string, role: location-key, note: 5-digit US ZIP}
+      - {name: serviceType, type: enum, ref: ServiceType}
+      - {name: startedWhen, type: enum, ref: StartedWhen, note: coarse relative time bucket, not a timestamp}
+      - {name: note, type: string, nullable: true, max_length: 500}
+      - {name: createdAt, type: string, format: date-time}
+    created_by: createReport
+    read_by: [listReports, getZipStatus, getStats]
+  - name: ZipStatus
+    kind: aggregate
+    schema: components/schemas/ZipStatus
+    identifier: zipCode
+    fields:
+      - {name: zipCode, type: string}
+      - {name: status, type: enum, values: [issues_reported, all_clear]}
+      - {name: reports, type: array, items: OutageReport}
+    read_by: [getZipStatus]
+  - name: DashboardStats
+    kind: aggregate
+    schema: components/schemas/DashboardStats
+    identifier: null
+    fields:
+      - {name: reportsLast30Min, type: integer}
+      - {name: trend, type: enum, values: [up, down, stable]}
+      - {name: reportsToday, type: integer}
+      - {name: reportsThisMonth, type: integer}
+      - {name: citiesAffected, type: integer}
+      - {name: status, type: enum, values: [all_clear, issues]}
+      - {name: timeline, type: array, note: hour/count buckets}
+      - {name: breakdown, type: object, note: counts by internet/tv/phone/all}
+      - {name: latestReports, type: array, items: OutageReport}
+      - {name: topAreas, type: array, note: zipCode/count pairs}
+      - {name: lastUpdated, type: string, format: date-time}
+    read_by: [getStats]
+  - name: PaginationMeta
+    kind: envelope
+    schema: components/schemas/PaginationMeta
+    fields:
+      - {name: page, type: integer}
+      - {name: pageSize, type: integer}
+      - {name: total, type: integer}
+      - {name: totalPages, type: integer}
+    used_by: [listReports]
+enums:
+  - name: ServiceType
+    values: [internet, tv, phone, all]
+    used_by: [OutageReport, CreateReportInput, DashboardStats.breakdown]
+  - name: StartedWhen
+    values: [just_now, last_hour, few_hours, today, yesterday, days_ago]
+    used_by: [OutageReport, CreateReportInput]
+relationships:
+  - from: ZipStatus
+    to: OutageReport
+    type: has_many
+    via: reports
+    evidence: ZipStatus.reports is an array of $ref OutageReport
+  - from: DashboardStats
+    to: OutageReport
+    type: has_many
+    via: latestReports
+    evidence: DashboardStats.latestReports is an array of $ref OutageReport
+  - from: OutageReport
+    to: ZipStatus
+    type: belongs_to
+    via: zipCode
+    evidence: OutageReport.zipCode is the identifier ZipStatus is addressed by (getZipStatus /zip/{zip})
+  - from: OutageReport
+    to: ServiceType
+    type: has_one
+    via: serviceType
+    evidence: $ref to the ServiceType enum
+  - from: OutageReport
+    to: StartedWhen
+    type: has_one
+    via: startedWhen
+    evidence: $ref to the StartedWhen enum
+  - from: CreateReportInput
+    to: OutageReport
+    type: creates
+    via: POST /reports
+    evidence: createReport requestBody is CreateReportInput; the 201 response is ReportResponse wrapping OutageReport
+untyped_surfaces:
+  - operation: getCity
+    schema: CityResponse.data
+    declared: object
+    note: "described in prose as 'City page data including stats, map clusters, and reports' but has no properties — an agent cannot bind to it"
+  - operation: getState
+    schema: StateResponse.data
+    declared: object
+    note: "'State page data including stats, featured cities, and map clusters' — no properties declared"
+  - operation: listStates
+    schema: StatesListResponse.data
+    declared: object
+    note: "'State slug to report count mapping' — a free-form map, no properties declared"
+  - operation: getMapData
+    schema: MapResponse.data
+    declared: object
+    note: "'Map clusters, pins, and summary' — no properties declared; only meta.range is typed"
+gaps:
+  - 4 of 8 operations return an untyped `object` payload, so half the API's response surface is not machine-readable
+  - no City or State entity — locations are slug-addressed views with no id, no canonical list of valid slugs, and no schema
+  - startedWhen is a relative bucket rather than a timestamp, so report start times cannot be ordered precisely
+render: null

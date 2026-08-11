@@ -1,0 +1,50 @@
+generated: '2026-08-11'
+method: probed
+source: https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+plan_count: 1
+note: >-
+  SpectrumOutage.us publishes NO pricing page on its own site (https://spectrumoutage.us/pricing → 404) and
+  no self-service signup: a direct API key is issued manually by emailing usspectrumoutage@gmail.com with a
+  use case and expected traffic, with no published price attached. The only published, structured plan for
+  this API is the RapidAPI marketplace listing, read here from the plan data embedded in that listing.
+plans:
+  - name: BASIC
+    channel: rapidapi
+    price: 0
+    currency: USD
+    pricing_model: free
+    billing_period: monthly
+    included_quota:
+      amount: 500000
+      unit: requests
+      period: monthly
+      note: a call to any endpoint counts as one request
+    overage:
+      price: 0
+      enforcement: hard
+      note: hard limit — requests are refused rather than billed past the quota
+    limits:
+      - 100 requests per minute per API key (provider-wide rate limit, see rate-limits artifact)
+    visibility: public
+    source: https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+direct_channel:
+  self_serve: false
+  price: null
+  how_to_get_access: email usspectrumoutage@gmail.com with subject "API Key Request", stating use case and expected traffic
+  docs: https://api.spectrumoutage.us
+  note: >-
+    No price, tier, quota or trial is published for the direct channel — only the 100 req/min rate limit.
+    Treated as unpriced/contact-only rather than free, because the provider does not state either.
+marketplace_metadata:
+  listing_category: Monitoring
+  listing_pricing_label: FREE
+  api_version: 1.0.0
+  version_created: '2026-07-17'
+  listing_status: ACTIVE
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+    - url: https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+      status: 200
+    - url: https://spectrumoutage.us/pricing
+      status: 404

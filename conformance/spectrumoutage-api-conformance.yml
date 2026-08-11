@@ -1,0 +1,64 @@
+generated: '2026-08-11'
+method: derived
+source: openapi/spectrumoutage-api-openapi.yml
+docs_checked:
+  - https://api.spectrumoutage.us
+  - https://spectrumoutage.us/terms-of-service
+  - https://spectrumoutage.us/privacy-policy
+  - https://spectrumoutage.us/disclaimer
+standards:
+  - id: openapi-3.0
+    conforms: true
+    evidence: 'openapi: 3.0.3 document published at https://api.spectrumoutage.us/openapi.yaml and in the provider GitHub repo (byte-identical)'
+  - id: http-bearer-auth
+    conforms: true
+    evidence: components.securitySchemes.bearerAuth is type http / scheme bearer, applied spec-wide
+  - id: oauth2
+    conforms: false
+    evidence: no oauth2 security scheme in the spec and no OAuth documented
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration returns 404 on both hosts
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: errors are a bespoke {"error":{"message","code"}} envelope on application/json, not application/problem+json
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 404 on both hosts
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: no Sunset/Deprecation header support and no deprecation policy published
+  - id: rfc6585-rate-limit
+    conforms: partial
+    evidence: 429 is returned and documented on every operation, but no Retry-After and no RateLimit-* headers are documented or observed
+  - id: idempotency
+    conforms: false
+    evidence: no idempotency key or retry-safety contract for POST /reports
+  - id: pagination
+    conforms: true
+    evidence: page/pageSize query parameters with a meta {page,pageSize,total,totalPages} envelope on listReports
+  - id: json-schema
+    conforms: true
+    evidence: 16 reusable components.schemas with enums for ServiceType and StartedWhen
+  - id: llms-txt
+    conforms: partial
+    evidence: >-
+      an agent-facing reference is served on both hosts, but at /llm.txt (singular) rather than the
+      /llms.txt convention — https://spectrumoutage.us/llms.txt and https://api.spectrumoutage.us/llms.txt
+      both return 404
+  - id: a2a-agent-card
+    conforms: false
+    evidence: /.well-known/agent-card.json and /.well-known/agent.json return 404 on both hosts
+  - id: mcp
+    conforms: false
+    evidence: no hosted MCP server; /.well-known/mcp.json and /mcp return 404
+  - id: asyncapi
+    conforms: false
+    evidence: no event, streaming or webhook surface is documented — not applicable to this API
+compliance_program:
+  published: false
+  certifications: []
+  note: >-
+    No SOC 2 / ISO 27001 / PCI / HIPAA / FedRAMP claim, no trust center, and no compliance page. The
+    provider is an independent community tracker; a privacy policy, terms of service and a disclaimer are
+    published, but no certification program. No `Compliance` pointer is emitted.

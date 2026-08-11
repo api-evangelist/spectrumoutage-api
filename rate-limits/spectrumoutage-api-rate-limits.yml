@@ -1,0 +1,48 @@
+generated: '2026-08-11'
+method: searched
+source: https://api.spectrumoutage.us
+supporting_sources:
+  - https://api.spectrumoutage.us/llm.txt
+  - openapi/spectrumoutage-api-openapi.yml
+  - https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+limit_count: 1
+rate_limits:
+  - scope: per-api-key
+    limit: 100
+    unit: requests
+    window: 1m
+    burst: null
+    applies_to: all endpoints
+    exhaustion_status: 429
+    source: https://api.spectrumoutage.us
+    note: >-
+      Stated identically in the docs ("Rate limits — 100 requests per minute per API key"), in the
+      OpenAPI info.description, in llm.txt, and in the RapidAPI README.
+response_headers:
+  ratelimit_headers: []
+  retry_after: false
+  note: >-
+    No RateLimit-* / X-RateLimit-* headers and no Retry-After are documented. A live HEAD of the site's own
+    unauthenticated JSON route (https://spectrumoutage.us/api/stats, 200 application/json) returned no
+    rate-limit headers of any form. The only runtime signal available to an agent is the 429 status itself
+    with the message "Rate limit exceeded. Max 100 requests per minute."
+quota:
+  marketplace: rapidapi
+  plan: BASIC
+  amount: 500000
+  unit: requests
+  period: monthly
+  enforcement: hard
+  note: >-
+    A separate monthly request quota applies to consumers who subscribe through the RapidAPI listing rather
+    than a direct key — 500,000 requests/month, hard limit, no overage price. See
+    plans/spectrumoutage-api-plans-pricing.yml.
+x-evidence:
+  fetched: '2026-08-11'
+  probes:
+    - url: https://spectrumoutage.us/api/stats
+      status: 200
+      finding: application/json, no rate-limit headers present
+    - url: https://spectrumoutage.us/api/v1/stats
+      status: 404
+      finding: documented base path returns an HTML 404 (see lifecycle artifact)

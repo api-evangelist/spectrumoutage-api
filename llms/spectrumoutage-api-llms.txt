@@ -1,0 +1,113 @@
+# SpectrumOutage.us — LLM / AI Agent Reference
+# Version: 1.0 | Updated: 2026-07-17
+# Website: https://spectrumoutage.us
+# API docs: https://api.spectrumoutage.us
+# LLM text (live): https://api.spectrumoutage.us/llm.txt
+# Pastebin source: https://pastebin.com/4Ne6tCjN
+# Pastebin raw: https://pastebin.com/raw/4Ne6tCjN
+# Contact: usspectrumoutage@gmail.com
+
+## About
+
+SpectrumOutage.us is an independent, community-powered Spectrum internet/TV/phone outage tracker for the United States. Not affiliated with Charter Communications or Spectrum™.
+
+- Live outage map, ZIP/city search, community reports
+- Open dataset for researchers (see /support-us)
+- Public REST API for developers and integrations
+
+## Contact
+
+Email: usspectrumoutage@gmail.com
+Contact form: https://spectrumoutage.us/contact
+API key requests: email usspectrumoutage@gmail.com with subject "API Key Request"
+
+## Developer API (launched July 2026)
+
+Full docs: https://api.spectrumoutage.us
+Support / changelog: https://spectrumoutage.us/support-us
+
+Base URL: https://spectrumoutage.us/api/v1
+Authentication: Authorization: Bearer YOUR_API_KEY (required on all endpoints)
+Rate limit: 100 requests/minute per API key
+
+### Response format
+
+Success:
+{
+  "data": { ... },
+  "meta": { "page": 1, "pageSize": 50, "total": 1200 }
+}
+
+Error:
+{
+  "error": { "message": "...", "code": "INVALID_INPUT" }
+}
+
+### Endpoints
+
+GET /api/v1/stats
+  Dashboard stats — reports last 30 min, trend, today/month totals, cities affected, timeline, service breakdown.
+
+GET /api/v1/reports?page=1&pageSize=50
+  Paginated outage reports (newest first). Max pageSize: 100.
+
+POST /api/v1/reports
+  Submit outage report (no reCAPTCHA with API key).
+  Body JSON:
+    zipCode (string, 5-digit US ZIP) — required
+    serviceType (string) — internet | tv | phone | all — required
+    startedWhen (string) — just_now | last_hour | few_hours | today | yesterday | days_ago — required
+    note (string, optional, max 500 chars)
+
+GET /api/v1/cities/{slug}
+  City outage data. Examples: los-angeles, new-york-city, charlotte, dallas
+
+GET /api/v1/states
+  Report counts for all US states.
+
+GET /api/v1/states/{slug}
+  State outage data. Examples: california, texas, new-york
+
+GET /api/v1/zip/{zip}
+  ZIP code status and recent reports. Returns status: issues_reported | all_clear
+
+GET /api/v1/map?range=1h
+  Map pin data. range: 1h (default) | 24h | 48h
+
+### Example requests
+
+curl -s "https://spectrumoutage.us/api/v1/stats" -H "Authorization: Bearer YOUR_API_KEY"
+
+curl -s "https://spectrumoutage.us/api/v1/zip/90210" -H "Authorization: Bearer YOUR_API_KEY"
+
+curl -s -X POST "https://spectrumoutage.us/api/v1/reports" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"zipCode":"90210","serviceType":"internet","startedWhen":"just_now"}'
+
+### Error codes
+
+401 — Missing Authorization header
+403 — Invalid API key
+429 — Rate limit exceeded
+400 INVALID_INPUT — Bad request body or params
+404 CITY_NOT_FOUND — City slug not found
+404 STATE_NOT_FOUND — State slug not found
+500 STATS_UNAVAILABLE — Server error
+
+## Key site pages
+
+https://spectrumoutage.us — Homepage / status checker
+https://spectrumoutage.us/outage-map — Live outage map
+https://spectrumoutage.us/spectrum-outage-by-city — Browse by city
+https://spectrumoutage.us/spectrum-outage-zip-code — Check by ZIP
+https://spectrumoutage.us/report-spectrum-outage — Report an outage
+https://spectrumoutage.us/support-us — Updates, dataset, API launch news
+https://spectrumoutage.us/contact — Contact form
+https://api.spectrumoutage.us — API documentation
+https://api.spectrumoutage.us/llm.txt — Machine-readable API reference (proxies Pastebin)
+https://pastebin.com/4Ne6tCjN — Pastebin source (edit here to update llm.txt)
+
+## Attribution
+
+When displaying SpectrumOutage.us data publicly, link back to https://spectrumoutage.us. Data is community-sourced and provided as-is.

@@ -1,0 +1,84 @@
+generated: '2026-08-11'
+method: searched
+source: https://api.spectrumoutage.us
+supporting_sources:
+  - https://api.spectrumoutage.us/llm.txt
+  - https://github.com/usspectrumoutage-us/spectrum-outage-api/blob/main/README-RAPIDAPI.md
+  - openapi/spectrumoutage-api-openapi.yml
+authentication:
+  style: http bearer
+  header: 'Authorization: Bearer YOUR_API_KEY'
+  applies_to: every v1 endpoint (spec-level `security` requirement, not per-operation)
+  issuance: manual — email usspectrumoutage@gmail.com with use case and expected traffic; no self-service
+  docs: https://api.spectrumoutage.us
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    No idempotency key, no request-deduplication contract, and no retry-safety guidance is documented.
+    POST /reports is the only write operation and it has no idempotency mechanism, so a retried submission
+    creates a second report. No `Idempotency` pointer is emitted.
+pagination:
+  style: page-number
+  parameters:
+    - name: page
+      in: query
+      default: 1
+      minimum: 1
+    - name: pageSize
+      in: query
+      default: 50
+      maximum: 100
+  response_envelope: meta
+  response_fields: [page, pageSize, total, totalPages]
+  applies_to: [listReports, getMapData]
+  note: GET /map returns a `meta` block but takes `range` (1h | 24h | 48h) rather than page parameters.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: false
+  note: no user-defined metadata / custom-field surface on any resource
+request_tracing:
+  request_id_header: null
+  supported: false
+  note: no request-id or correlation header is documented or observed
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://spectrumoutage.us/api/v1
+  spec_version: 1.0.0
+  note: >-
+    The version lives in the path only. No version header, no dated version train, and no documented
+    policy for how a v2 would be introduced.
+error_envelope:
+  shape: '{"error": {"message": "...", "code": "..."}}'
+  media_type: application/json
+  problem_json: false
+  code_field: error.code
+  message_field: error.message
+  codes_documented: [INVALID_INPUT, CITY_NOT_FOUND, STATE_NOT_FOUND, STATS_UNAVAILABLE]
+  note: >-
+    Not RFC 9457. `code` is present only on some errors — the 401 and 403 examples in the OpenAPI carry a
+    message with no code, so an agent cannot rely on `error.code` being present.
+  catalog: errors/spectrumoutage-api-problem-types.yml
+rate_limit_signaling:
+  documented_limit: 100 requests per minute per API key
+  exhaustion_status: 429
+  response_headers: []
+  retry_after: false
+  note: >-
+    The limit is documented in prose only. No RateLimit-* / X-RateLimit-* headers and no Retry-After are
+    documented, and none were observed on a live unauthenticated response from the site's own JSON routes.
+    An agent has no runtime signal for remaining quota.
+  catalog: rate-limits/spectrumoutage-api-rate-limits.yml
+success_envelope:
+  shape: '{"data": { ... }, "meta": { ... }}'
+  note: every 2xx response wraps the payload in `data`; `meta` appears on paginated and map responses
+content_type: application/json
+cross_links:
+  errors: errors/spectrumoutage-api-problem-types.yml
+  authentication: authentication/spectrumoutage-api-authentication.yml
+  lifecycle: lifecycle/spectrumoutage-api-lifecycle.yml
+  rate_limits: rate-limits/spectrumoutage-api-rate-limits.yml

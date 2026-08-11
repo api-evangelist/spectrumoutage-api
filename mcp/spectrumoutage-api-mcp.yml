@@ -1,0 +1,62 @@
+generated: '2026-08-11'
+method: derived
+status: candidate
+source: openapi/spectrumoutage-api-openapi.yml
+summary: >-
+  No official hosted or remote Model Context Protocol server is published by SpectrumOutage.us. The tool
+  set below is DERIVED from the eight operations in the provider's own OpenAPI 3.0.3 document as a
+  proposal for an agent-facing MCP surface. It is NOT published by the provider, so no `MCPServer`
+  pointer is wired into apis.yml — the artifact records a candidate design, not a served endpoint.
+search_result:
+  official_hosted_server: none
+  probes:
+    - url: https://api.spectrumoutage.us/mcp
+      method: GET
+      status: 404
+    - url: https://spectrumoutage.us/.well-known/mcp.json
+      method: GET
+      status: 404
+    - url: https://api.spectrumoutage.us/.well-known/mcp.json
+      method: GET
+      status: 404
+  docs_checked:
+    - https://api.spectrumoutage.us
+    - https://api.spectrumoutage.us/llm.txt
+    - https://spectrumoutage.us/support-us
+    - https://github.com/usspectrumoutage-us/spectrum-outage-api
+  note: >-
+    The provider is agent-aware — it serves an llm.txt on both hosts and markets it "for AI agents" — but
+    publishes no MCP server, no agent card, and no agent skills.
+server: null
+transport: null
+auth:
+  scheme: http bearer
+  header: 'Authorization: Bearer <api-key>'
+  note: an API key must be obtained by emailing the provider; there is no self-service issuance
+tools:
+  - name: get_stats
+    description: Get dashboard stats — reports in the last 30 minutes, trend, today/month totals, cities affected, timeline, and service breakdown.
+    source_operation: openapi/spectrumoutage-api-openapi.yml#getStats
+  - name: list_reports
+    description: List paginated community outage reports, newest first (page, pageSize up to 100).
+    source_operation: openapi/spectrumoutage-api-openapi.yml#listReports
+  - name: create_report
+    description: Submit a new outage report (zipCode, serviceType, startedWhen, optional note).
+    source_operation: openapi/spectrumoutage-api-openapi.yml#createReport
+    write: true
+  - name: get_city
+    description: Get outage data for a city by slug (e.g. los-angeles, new-york-city).
+    source_operation: openapi/spectrumoutage-api-openapi.yml#getCity
+  - name: list_states
+    description: Get outage report counts for all US states.
+    source_operation: openapi/spectrumoutage-api-openapi.yml#listStates
+  - name: get_state
+    description: Get outage data for a state by slug (e.g. california, texas).
+    source_operation: openapi/spectrumoutage-api-openapi.yml#getState
+  - name: get_zip_status
+    description: Get outage status (issues_reported | all_clear) and recent reports for a 5-digit US ZIP.
+    source_operation: openapi/spectrumoutage-api-openapi.yml#getZipStatus
+  - name: get_map_data
+    description: Get map pin data for outage visualization over a 1h, 24h, or 48h range.
+    source_operation: openapi/spectrumoutage-api-openapi.yml#getMapData
+tool_count: 8

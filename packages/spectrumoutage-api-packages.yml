@@ -1,0 +1,30 @@
+generated: '2026-08-11'
+method: searched
+source: >-
+  npm registry search, pypi.org, rubygems.org, the provider GitHub account
+  (github.com/usspectrumoutage-us), the developer docs (api.spectrumoutage.us), the support/updates page
+  (spectrumoutage.us/support-us) and the RapidAPI listing
+package_count: 0
+packages: []
+note: >-
+  No first-party client library exists in any public registry. Searched npm (registry.npmjs.org search for
+  "spectrumoutage" and "spectrum-outage" — zero matches attributable to this provider), PyPI
+  (pypi.org/pypi/spectrumoutage/json and /spectrum-outage/json both 404), RubyGems
+  (api/v1/gems/spectrumoutage.json 404). The provider's public GitHub account exposes three repositories
+  (openapi-directory fork, spectrum-outage-api, spectrum-outage-dataset) and none of them contain SDK
+  source — spectrum-outage-api holds only openapi.yaml, llm.txt and READMEs. Integration is expected to
+  be direct HTTP, via the published OpenAPI import into Postman/RapidAPI, or via the RapidAPI generated
+  snippets. No SDKs pointer is emitted, because the provider ships no client library.
+registries_checked:
+  - registry: npm
+    query: spectrumoutage / spectrum-outage
+    result: no first-party package
+  - registry: pypi
+    query: spectrumoutage, spectrum-outage
+    result: 404
+  - registry: rubygems
+    query: spectrumoutage
+    result: 404
+  - registry: github
+    query: github.com/usspectrumoutage-us
+    result: 3 repos, no SDK source

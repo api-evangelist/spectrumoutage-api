@@ -1,0 +1,82 @@
+generated: '2026-08-11'
+method: searched
+source: https://api.spectrumoutage.us
+supporting_sources:
+  - https://spectrumoutage.us/support-us
+  - https://spectrumoutage.us/terms-of-service
+  - openapi/spectrumoutage-api-openapi.yml
+versioning:
+  scheme: uri-path
+  current: v1
+  spec_version: 1.0.0
+  base: https://spectrumoutage.us/api/v1
+  policy_url: null
+  note: No published versioning policy; the version appears only as the /v1 path segment.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No deprecation policy, no RFC 8594 Sunset/Deprecation header support, and no advance-notice commitment
+    is published. No `Deprecation` pointer is emitted.
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    No SLA or uptime commitment. The terms of service and the OpenAPI license block both describe the data
+    as community-sourced and "provided as-is", with attribution required.
+status_page:
+  url: null
+  note: >-
+    The provider operates an outage tracker for a THIRD PARTY (Charter Spectrum) — spectrumoutage.us is
+    itself a status surface for someone else's network. It publishes no status page for its OWN API.
+    https://spectrumoutage.us/status returns 404. No `StatusPage` pointer is emitted; wiring one would
+    credit the provider for monitoring Spectrum, not for reporting its own availability.
+support:
+  contact: https://spectrumoutage.us/contact
+  email: usspectrumoutage@gmail.com
+  updates_feed: https://spectrumoutage.us/support-us
+launch:
+  api_launched: '2026-07'
+  source: llm.txt ("Developer API (launched July 2026)") and the RapidAPI listing version 1.0.0 created 2026-07-17
+availability_finding:
+  severity: high
+  observed: '2026-08-11'
+  finding: >-
+    Every one of the eight documented operations returns HTTP 404 at the documented base URL
+    https://spectrumoutage.us/api/v1 — with a valid-shaped Authorization header, with an invalid one, and
+    with none at all. The 404 is an HTML page rendered by the site's Next.js app (x-powered-by: Next.js,
+    x-nextjs-prerender: 1), not the documented JSON error envelope, which means the /api/v1 route family
+    is not mounted rather than rejecting the caller. A correctly-authenticated client would receive 401 or
+    403 JSON; an unauthenticated one receives an HTML 404 from the web app.
+  contrast: >-
+    Unversioned sibling routes on the same host DO answer 200 application/json anonymously
+    (/api/stats, /api/map, /api/zip/{zip}); /api/reports answers 405 to GET and /api/states 404s. These are
+    the site's own front-end data routes, not the documented product, and their shapes are not a
+    one-to-one match for the v1 contract.
+  interpretation: >-
+    Recorded as an observation, not a conclusion about the provider's intent. The documented v1 surface may
+    be gated at the edge in a way that returns 404 to unknown keys, or may not be deployed. It cannot be
+    resolved from outside without an issued key, which is only available by email.
+  probes:
+    - url: https://spectrumoutage.us/api/v1/stats
+      status: 404
+      auth: none
+    - url: https://spectrumoutage.us/api/v1/stats
+      status: 404
+      auth: 'Bearer <invalid test value>'
+    - url: https://spectrumoutage.us/api/v1/reports
+      status: 404
+    - url: https://spectrumoutage.us/api/v1/zip/90210
+      status: 404
+    - url: https://spectrumoutage.us/api/v1/map
+      status: 404
+    - url: https://spectrumoutage.us/api/v1/states
+      status: 404
+    - url: https://spectrumoutage.us/api/v1/
+      status: 404
+    - url: https://api.spectrumoutage.us/v1/stats
+      status: 404
+    - url: https://api.spectrumoutage.us/api/v1/stats
+      status: 404

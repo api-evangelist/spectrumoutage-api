@@ -1,0 +1,74 @@
+generated: '2026-08-11'
+method: searched
+source: https://api.spectrumoutage.us
+derived_from: openapi/spectrumoutage-api-openapi.yml
+format: custom-envelope
+problem_json: false
+envelope:
+  shape: '{"error": {"message": "...", "code": "..."}}'
+  message_field: error.message
+  code_field: error.code
+  note: >-
+    Not RFC 9457 — responses are application/json with a bespoke `error` object, and the `code` field is
+    absent on the 401 and 403 examples the provider publishes.
+problems:
+  - status: 400
+    code: INVALID_INPUT
+    title: Invalid request body or parameters
+    message: Invalid report data.
+    remediation: >-
+      Check the request body against CreateReportInput — zipCode must be a 5-digit US ZIP, serviceType one
+      of internet|tv|phone|all, startedWhen one of just_now|last_hour|few_hours|today|yesterday|days_ago,
+      note at most 500 characters. On GET /zip/{zip} and GET /map, check the ZIP format and the `range`
+      value (1h|24h|48h).
+    component: BadRequest
+    source_operations: [createReport, getZipStatus, getMapData]
+  - status: 401
+    code: null
+    title: Missing Authorization header
+    message: "Missing API key. Send Authorization: Bearer <key>"
+    remediation: "Send `Authorization: Bearer YOUR_API_KEY` on every request; the API has no anonymous mode."
+    component: Unauthorized
+    source_operations: [getStats, listReports, createReport, getCity, listStates, getState, getZipStatus, getMapData]
+  - status: 403
+    code: null
+    title: Invalid API key
+    message: Invalid API key.
+    remediation: The key is not recognised. Request a key by emailing usspectrumoutage@gmail.com.
+    component: Forbidden
+    source_operations: [getStats, listReports, createReport, getCity, listStates, getState, getZipStatus, getMapData]
+  - status: 404
+    code: CITY_NOT_FOUND
+    title: City slug not found
+    message: City not found.
+    remediation: Use a valid city slug (e.g. los-angeles, new-york-city, charlotte, dallas).
+    component: CityNotFound
+    source_operations: [getCity]
+  - status: 404
+    code: STATE_NOT_FOUND
+    title: State slug not found
+    message: State not found.
+    remediation: Use a valid state slug (e.g. california, texas, new-york) or call listStates first.
+    component: StateNotFound
+    source_operations: [getState]
+  - status: 429
+    code: null
+    title: Rate limit exceeded
+    message: Rate limit exceeded. Max 100 requests per minute.
+    remediation: >-
+      Back off and retry. No Retry-After or RateLimit-* header is documented or returned, so a client must
+      apply its own backoff — budget against the documented 100 req/min per key.
+    component: RateLimited
+    source_operations: [getStats, listReports, createReport, getCity, listStates, getState, getZipStatus, getMapData]
+  - status: 500
+    code: STATS_UNAVAILABLE
+    title: Server error loading data
+    message: null
+    remediation: Retry; the documented code STATS_UNAVAILABLE indicates a server-side data-load failure.
+    component: ServerError
+    source_operations: [getStats, listReports, createReport, getCity, listStates, getState, getZipStatus, getMapData]
+problem_count: 7
+note: >-
+  Every operation declares 401/403/429/500; the 400 and 404 variants are operation-specific. The docs error
+  table at https://api.spectrumoutage.us (section "Error codes") matches the OpenAPI components/responses
+  block exactly, and both agree with the llm.txt error list — a rare three-way consistency.

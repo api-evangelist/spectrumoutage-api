@@ -1,0 +1,76 @@
+generated: '2026-08-11'
+method: searched
+source: https://spectrumoutage.us/support-us
+scheme: dated-feed
+granularity: month
+current_version: 1.0.0
+note: >-
+  There is no API-specific changelog. The provider maintains a single product-wide "Latest updates" feed on
+  its support page ("Everything we've shipped, published, and launched — in one feed"), dated to the month
+  rather than the day, covering the website, the dataset and the API together. The API's own version
+  history is a single entry: v1.0.0. Entries below are captured verbatim in substance from that feed; the
+  recent window only.
+entries:
+  - date: '2026-07'
+    version: null
+    kind: feature
+    title: Share your report + live weather panels
+    breaking: false
+    highlights:
+      - report submissions can be shared to social media
+      - every area page shows a live weather panel
+    scope: website
+  - date: '2026-07'
+    version: null
+    kind: platform
+    title: Social feed auto-sync
+    breaking: false
+    highlights:
+      - channels sync automatically with the latest outage activity
+    scope: website
+  - date: '2026-07'
+    version: 1.0.0
+    kind: launch
+    title: Developer API launched
+    breaking: false
+    highlights:
+      - public REST API for stats, reports, cities, states, ZIP lookup and map pins
+      - OpenAPI 3.0.3 spec, llm.txt, Postman collection and RapidAPI listing published
+    scope: api
+    source: >-
+      llm.txt "Developer API (launched July 2026)" and the RapidAPI listing (version 1.0.0 created
+      2026-07-17); the support-us feed carries the API under its "Developer API" section rather than as a
+      dated entry.
+  - date: '2026-06'
+    version: null
+    kind: improvement
+    title: Homepage stats refresh
+    breaking: false
+    highlights:
+      - reporting database and homepage counters rebuilt so totals update in real time
+    scope: website
+  - date: '2026-06'
+    version: null
+    kind: improvement
+    title: Faster, more responsive layout
+    breaking: false
+    scope: website
+  - date: '2026-06'
+    version: null
+    kind: improvement
+    title: Better search visibility
+    breaking: false
+    scope: website
+  - date: '2026-06'
+    version: null
+    kind: dataset
+    title: Open Spectrum outage dataset launched
+    breaking: false
+    highlights:
+      - community-reported outage dataset published free, no sign-up
+      - mirrors on GitHub, Hugging Face, Kaggle and Figshare
+    scope: data
+entry_count: 7
+gaps:
+  - no per-release API changelog and no dated entries for API changes
+  - no RSS/Atom or machine-readable feed for the updates list

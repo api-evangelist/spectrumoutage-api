@@ -1,11 +1,18 @@
 name: SpectrumOutage API
 description: >-
-  Community-powered REST API for live Spectrum internet, TV, and phone outage data across the US. Independent tracker,
-  not affiliated with Charter Communications or Spectrum. Provides aggregate stats, outage reports, city/state/ZIP
-  status, and map pin data.
+  Community-powered REST API for live Spectrum internet, TV, and phone outage data across the United
+  States, published by SpectrumOutage.us — an independent outage tracker with no affiliation to Charter
+  Communications or Spectrum. The v1 API exposes eight operations over crowdsourced outage reports:
+  national dashboard statistics with an hourly timeline and service breakdown, a paginated report feed,
+  outage submission, city and state lookups by slug, ZIP-code status (issues_reported / all_clear) with
+  the reports behind it, and map pin/cluster data over a 1h, 24h or 48h window. Access is a bearer API
+  key issued manually by email, or through a free RapidAPI plan; the provider also publishes an OpenAPI
+  3.0.3 specification, an agent-facing llm.txt on both hosts, a Postman collection, and an open outage
+  dataset mirrored to GitHub, Hugging Face, Kaggle and Figshare.
+image: https://spectrumoutage.us/icons/icon-192.png
 url: https://spectrumoutage-api.apievangelist.com/apis.yml
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-08-11'
 specificationVersion: '0.21'
 tags:
   - spectrum
@@ -43,17 +50,105 @@ apis:
     properties:
       - type: OpenAPI
         url: https://api.spectrumoutage.us/openapi.yaml
+      - type: OpenAPI
+        url: openapi/spectrumoutage-api-openapi.yml
       - type: Documentation
         url: https://api.spectrumoutage.us
-      - type: LLMSTxt
+      - type: LLMsTxt
         url: https://api.spectrumoutage.us/llm.txt
-      - type: LLMSTxt
+      - type: LLMsTxt
         url: https://spectrumoutage.us/llm.txt
+      - type: LLMsTxt
+        url: llms/spectrumoutage-api-llms.txt
 maintainers:
   - FN: SpectrumOutage
+    email: usspectrumoutage@gmail.com
     url: https://spectrumoutage.us/contact
 generated:
   by: apis.io/add
   model: claude-opus-4-8
   confidence: 90
   at: '2026-07-17T11:26:02.897Z'
+common:
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/spectrumoutage-api-openapi-overlay.yaml
+- type: DomainSecurity
+  url: security/spectrumoutage-api-domain-security.yml
+- type: Authentication
+  url: authentication/spectrumoutage-api-authentication.yml
+- type: DeveloperPortal
+  url: https://api.spectrumoutage.us
+- type: Documentation
+  url: https://api.spectrumoutage.us
+- type: APIReference
+  url: https://api.spectrumoutage.us
+- type: GettingStarted
+  url: https://api.spectrumoutage.us/#introduction
+- type: Support
+  url: https://spectrumoutage.us/contact
+- type: GitHubOrganization
+  url: https://github.com/usspectrumoutage-us
+- type: SourceCode
+  url: https://github.com/usspectrumoutage-us/spectrum-outage-api
+- type: Postman
+  url: https://documenter.getpostman.com/view/56702125/2sBY4PMzPS
+- type: Pricing
+  url: https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+- type: TermsOfService
+  url: https://spectrumoutage.us/terms-of-service
+- type: PrivacyPolicy
+  url: https://spectrumoutage.us/privacy-policy
+- type: License
+  url: https://spectrumoutage.us/disclaimer
+- type: ChangeLog
+  url: https://spectrumoutage.us/support-us
+- type: ChangeLog
+  url: changelog/spectrumoutage-api-changelog.yml
+- type: Conventions
+  url: conventions/spectrumoutage-api-conventions.yml
+- type: ErrorCatalog
+  url: errors/spectrumoutage-api-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/spectrumoutage-api-lifecycle.yml
+- type: Conformance
+  url: conformance/spectrumoutage-api-conformance.yml
+- type: DataModel
+  url: data-model/spectrumoutage-api-data-model.yml
+- type: RateLimits
+  url: rate-limits/spectrumoutage-api-rate-limits.yml
+- type: Plans
+  url: plans/spectrumoutage-api-plans-pricing.yml
+- type: Packages
+  url: packages/spectrumoutage-api-packages.yml
+x-pointers-deliberately-omitted:
+  MCPServer: >-
+    mcp/spectrumoutage-api-mcp.yml is a DERIVED candidate tool list, not a served MCP endpoint. The
+    provider publishes no hosted MCP server (/mcp and /.well-known/mcp.json 404 on both hosts), so wiring
+    an MCPServer pointer would credit an agent surface that does not exist.
+  WellKnown: >-
+    All 18 /.well-known/ paths probed across both hosts returned 404. well-known/ records that verified
+    absence; there is no served document to point at.
+  AgentCard: >-
+    /.well-known/agent-card.json and /.well-known/agent.json both 404 on both hosts. Per the pipeline this
+    artifact is search-only, so nothing was written.
+  StatusPage: >-
+    The provider is a status surface for a THIRD party (Charter Spectrum) and publishes no status page for
+    its own API. https://spectrumoutage.us/status returns 404.
+  Deprecation: no deprecation policy and no RFC 8594 Sunset/Deprecation header support is published.
+  Security: >-
+    No security.txt, no vulnerability disclosure page and no bug bounty were found by
+    probe-security-programs.py or by hand.
+  Compliance: no certifications, trust center or compliance program is published.
+  SDKs: no first-party client library exists in any public registry; packages/ records the zero.
+  Idempotency: >-
+    POST /reports has no idempotency key and no request-deduplication contract; a retry creates a
+    duplicate report.
+  AsyncAPI: no event, streaming or webhook surface is documented.
+  SignUp: API keys are issued only by email; there is no self-service signup on the provider's own site.
+x-enrichment:
+  date: '2026-08-11'
+  status: enriched
+  artifacts_added: 21
+  pass: local-v1
