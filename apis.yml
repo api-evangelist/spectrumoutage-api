@@ -10,7 +10,7 @@ description: >-
   3.0.3 specification, an agent-facing llm.txt on both hosts, a Postman collection, and an open outage
   dataset mirrored to GitHub, Hugging Face, Kaggle and Figshare.
 image: https://spectrumoutage.us/icons/icon-192.png
-url: https://spectrumoutage-api.apievangelist.com/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/spectrumoutage-api/refs/heads/main/apis.yml
 created: '2026-07-17'
 modified: '2026-08-11'
 specificationVersion: '0.21'
