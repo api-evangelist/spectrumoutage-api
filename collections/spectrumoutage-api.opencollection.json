@@ -1,0 +1,186 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "SpectrumOutage API",
+    "version": "1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Stats",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get dashboard stats",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/stats"
+          },
+          "docs": "Returns homepage-style stats — reports last 30 min, trend, today/month totals, cities affected, timeline, and service breakdown."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Reports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List outage reports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/reports",
+            "params": [
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number (1-based)"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "Results per page (max 100)"
+              }
+            ]
+          },
+          "docs": "Paginated outage reports, newest first."
+        },
+        {
+          "info": {
+            "name": "Submit an outage report",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://spectrumoutage.us/api/v1/reports",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit a new community outage report. No reCAPTCHA required when using an API key."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Locations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get city outage data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/cities/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "",
+                "type": "path",
+                "description": "City slug (e.g. los-angeles, new-york-city, charlotte)"
+              }
+            ]
+          },
+          "docs": "Returns outage stats, map clusters, and recent reports for a city."
+        },
+        {
+          "info": {
+            "name": "List all state report counts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/states"
+          },
+          "docs": "Report counts for every US state (current month)."
+        },
+        {
+          "info": {
+            "name": "Get state outage data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/states/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "",
+                "type": "path",
+                "description": "State slug (e.g. california, texas, new-york)"
+              }
+            ]
+          },
+          "docs": "Returns outage stats, featured cities, and map clusters for a state."
+        },
+        {
+          "info": {
+            "name": "Check ZIP code status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/zip/:zip",
+            "params": [
+              {
+                "name": "zip",
+                "value": "",
+                "type": "path",
+                "description": "5-digit US ZIP code"
+              }
+            ]
+          },
+          "docs": "Returns outage status and recent reports for a 5-digit US ZIP code."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Map",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get map pin data",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://spectrumoutage.us/api/v1/map",
+            "params": [
+              {
+                "name": "range",
+                "value": "",
+                "type": "query",
+                "description": "Time window for map data"
+              }
+            ]
+          },
+          "docs": "Returns map clusters and individual pins for outage visualization."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
