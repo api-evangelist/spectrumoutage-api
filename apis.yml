@@ -41,51 +41,78 @@ tags_raw:
   - network-status
   - crowdsourced
 apis:
-  - name: SpectrumOutage API v1
-    description: >-
-      REST API for live Spectrum internet, TV, and phone outage data across the US. Bearer API key required on all
-      endpoints. Endpoints include /stats, /reports, /cities/{slug}, /states, /zip/{zip}, and /map.
-    humanURL: https://api.spectrumoutage.us
-    baseURL: https://spectrumoutage.us/api/v1
-    tags:
-      - Spectrum
-      - outage
-      - Internet
-      - TV
-      - Phone
-      - Monitoring
-      - Status
-      - ZIP Code
-      - Telecom
-      - ISP
-      - network-status
-      - Crowdsourced
-    tags_raw:
-      - spectrum
-      - outage
-      - internet
-      - tv
-      - phone
-      - monitoring
-      - status
-      - zip-code
-      - telecom
-      - isp
-      - network-status
-      - crowdsourced
-    properties:
-      - type: OpenAPI
-        url: https://api.spectrumoutage.us/openapi.yaml
-      - type: OpenAPI
-        url: openapi/spectrumoutage-api-openapi.yml
-      - type: Documentation
-        url: https://api.spectrumoutage.us
-      - type: LLMsTxt
-        url: https://api.spectrumoutage.us/llm.txt
-      - type: LLMsTxt
-        url: https://spectrumoutage.us/llm.txt
-      - type: LLMsTxt
-        url: llms/spectrumoutage-api-llms.txt
+- aid: spectrumoutage-api:spectrumoutage-api-locations-api
+  name: SpectrumOutage API Locations API
+  description: City, state, and ZIP lookup
+  humanURL: https://api.spectrumoutage.us
+  baseURL: https://spectrumoutage.us/api/v1
+  tags:
+  - Locations
+  properties:
+  - type: OpenAPI
+    url: openapi/spectrumoutage-api-locations-api-openapi.yml
+  - type: Documentation
+    url: https://api.spectrumoutage.us
+  - type: LLMsTxt
+    url: https://api.spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: https://spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: llms/spectrumoutage-api-llms.txt
+- aid: spectrumoutage-api:spectrumoutage-api-map-api
+  name: SpectrumOutage API Map API
+  description: Map pin and cluster data
+  humanURL: https://api.spectrumoutage.us
+  baseURL: https://spectrumoutage.us/api/v1
+  tags:
+  - Map
+  properties:
+  - type: OpenAPI
+    url: openapi/spectrumoutage-api-map-api-openapi.yml
+  - type: Documentation
+    url: https://api.spectrumoutage.us
+  - type: LLMsTxt
+    url: https://api.spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: https://spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: llms/spectrumoutage-api-llms.txt
+- aid: spectrumoutage-api:spectrumoutage-api-reports-api
+  name: SpectrumOutage API Reports API
+  description: Outage report listing and submission
+  humanURL: https://api.spectrumoutage.us
+  baseURL: https://spectrumoutage.us/api/v1
+  tags:
+  - Reports
+  properties:
+  - type: OpenAPI
+    url: openapi/spectrumoutage-api-reports-api-openapi.yml
+  - type: Documentation
+    url: https://api.spectrumoutage.us
+  - type: LLMsTxt
+    url: https://api.spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: https://spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: llms/spectrumoutage-api-llms.txt
+- aid: spectrumoutage-api:spectrumoutage-api-stats-api
+  name: SpectrumOutage API Stats API
+  description: Dashboard and aggregate statistics
+  humanURL: https://api.spectrumoutage.us
+  baseURL: https://spectrumoutage.us/api/v1
+  tags:
+  - Stats
+  properties:
+  - type: OpenAPI
+    url: openapi/spectrumoutage-api-stats-api-openapi.yml
+  - type: Documentation
+    url: https://api.spectrumoutage.us
+  - type: LLMsTxt
+    url: https://api.spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: https://spectrumoutage.us/llm.txt
+  - type: LLMsTxt
+    url: llms/spectrumoutage-api-llms.txt
 maintainers:
   - FN: SpectrumOutage
     email: usspectrumoutage@gmail.com
