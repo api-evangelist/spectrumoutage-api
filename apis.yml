@@ -9,6 +9,19 @@ description: >-
   key issued manually by email, or through a free RapidAPI plan; the provider also publishes an OpenAPI
   3.0.3 specification, an agent-facing llm.txt on both hosts, a Postman collection, and an open outage
   dataset mirrored to GitHub, Hugging Face, Kaggle and Figshare.
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 image: https://spectrumoutage.us/icons/icon-192.png
 url: https://raw.githubusercontent.com/api-evangelist/spectrumoutage-api/refs/heads/main/apis.yml
 created: '2026-07-17'
