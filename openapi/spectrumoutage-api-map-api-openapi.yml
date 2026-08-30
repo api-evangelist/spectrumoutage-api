@@ -1,0 +1,151 @@
+openapi: 3.2.0
+info:
+  title: SpectrumOutage Map API
+  version: 1.0.0
+  description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
+
+
+    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+
+    Not affiliated with Charter Communications or Spectrum™.
+
+
+    **Rate limit:** 100 requests per minute per API key.
+
+
+    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
+
+    '
+  contact:
+    name: spectrum outage
+    email: usspectrumoutage@gmail.com
+    url: https://spectrumoutage.us/contact
+  license:
+    name: Community data — attribution required
+    url: https://spectrumoutage.us/disclaimer
+  termsOfService: https://spectrumoutage.us/terms-of-service
+servers:
+- url: https://spectrumoutage.us/api/v1
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Map
+  description: Map pin and cluster data
+paths:
+  /map:
+    get:
+      tags:
+      - Map
+      summary: Get map pin data
+      description: Returns map clusters and individual pins for outage visualization.
+      operationId: getMapData
+      parameters:
+      - name: range
+        in: query
+        description: Time window for map data
+        schema:
+          type: string
+          enum:
+          - 1h
+          - 24h
+          - 48h
+          default: 1h
+      responses:
+        '200':
+          description: Map data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MapResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
+    MapResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          description: Map clusters, pins, and summary
+        meta:
+          type: object
+          properties:
+            range:
+              type: string
+              enum:
+              - 1h
+              - 24h
+              - 48h
+  responses:
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid report data.
+              code: INVALID_INPUT
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key issued by SpectrumOutage.us. Request at usspectrumoutage@gmail.com
+externalDocs:
+  description: Full API documentation
+  url: https://api.spectrumoutage.us

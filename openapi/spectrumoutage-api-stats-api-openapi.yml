@@ -1,0 +1,210 @@
+openapi: 3.2.0
+info:
+  title: SpectrumOutage Stats API
+  version: 1.0.0
+  description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
+
+
+    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+
+    Not affiliated with Charter Communications or Spectrum™.
+
+
+    **Rate limit:** 100 requests per minute per API key.
+
+
+    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
+
+    '
+  contact:
+    name: spectrum outage
+    email: usspectrumoutage@gmail.com
+    url: https://spectrumoutage.us/contact
+  license:
+    name: Community data — attribution required
+    url: https://spectrumoutage.us/disclaimer
+  termsOfService: https://spectrumoutage.us/terms-of-service
+servers:
+- url: https://spectrumoutage.us/api/v1
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Stats
+  description: Dashboard and aggregate statistics
+paths:
+  /stats:
+    get:
+      tags:
+      - Stats
+      summary: Get dashboard stats
+      description: Returns homepage-style stats — reports last 30 min, trend, today/month totals, cities affected, timeline, and service breakdown.
+      operationId: getStats
+      responses:
+        '200':
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    DashboardStats:
+      type: object
+      properties:
+        reportsLast30Min:
+          type: integer
+        trend:
+          type: string
+          enum:
+          - up
+          - down
+          - stable
+        reportsToday:
+          type: integer
+        reportsThisMonth:
+          type: integer
+        citiesAffected:
+          type: integer
+        status:
+          type: string
+          enum:
+          - all_clear
+          - issues
+        timeline:
+          type: array
+          items:
+            type: object
+            properties:
+              hour:
+                type: string
+              count:
+                type: integer
+        breakdown:
+          type: object
+          properties:
+            internet:
+              type: integer
+            tv:
+              type: integer
+            phone:
+              type: integer
+            all:
+              type: integer
+        latestReports:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutageReport'
+        topAreas:
+          type: array
+          items:
+            type: object
+            properties:
+              zipCode:
+                type: string
+              count:
+                type: integer
+        lastUpdated:
+          type: string
+          format: date-time
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
+    OutageReport:
+      type: object
+      properties:
+        id:
+          type: integer
+        zipCode:
+          type: string
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        startedWhen:
+          $ref: '#/components/schemas/StartedWhen'
+        note:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+    StatsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DashboardStats'
+  responses:
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key issued by SpectrumOutage.us. Request at usspectrumoutage@gmail.com
+externalDocs:
+  description: Full API documentation
+  url: https://api.spectrumoutage.us

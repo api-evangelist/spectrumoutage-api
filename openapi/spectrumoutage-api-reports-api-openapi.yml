@@ -1,0 +1,256 @@
+openapi: 3.2.0
+info:
+  title: SpectrumOutage Reports API
+  version: 1.0.0
+  description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
+
+
+    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+
+    Not affiliated with Charter Communications or Spectrum™.
+
+
+    **Rate limit:** 100 requests per minute per API key.
+
+
+    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
+
+    '
+  contact:
+    name: spectrum outage
+    email: usspectrumoutage@gmail.com
+    url: https://spectrumoutage.us/contact
+  license:
+    name: Community data — attribution required
+    url: https://spectrumoutage.us/disclaimer
+  termsOfService: https://spectrumoutage.us/terms-of-service
+servers:
+- url: https://spectrumoutage.us/api/v1
+  description: Production
+security:
+- bearerAuth: []
+tags:
+- name: Reports
+  description: Outage report listing and submission
+paths:
+  /reports:
+    get:
+      tags:
+      - Reports
+      summary: List outage reports
+      description: Paginated outage reports, newest first.
+      operationId: listReports
+      parameters:
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/pageSize'
+      responses:
+        '200':
+          description: Paginated reports
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportsListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+      - Reports
+      summary: Submit an outage report
+      description: Submit a new community outage report. No reCAPTCHA required when using an API key.
+      operationId: createReport
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReportInput'
+            example:
+              zipCode: '90210'
+              serviceType: internet
+              startedWhen: just_now
+              note: Optional short note
+      responses:
+        '201':
+          description: Report created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    pageSize:
+      name: pageSize
+      in: query
+      description: Results per page (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
+    ReportsListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutageReport'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    CreateReportInput:
+      type: object
+      required:
+      - zipCode
+      - serviceType
+      - startedWhen
+      properties:
+        zipCode:
+          type: string
+          pattern: ^\d{5}$
+          description: 5-digit US ZIP code
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        startedWhen:
+          $ref: '#/components/schemas/StartedWhen'
+        note:
+          type: string
+          maxLength: 500
+          description: Optional short note
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
+    OutageReport:
+      type: object
+      properties:
+        id:
+          type: integer
+        zipCode:
+          type: string
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        startedWhen:
+          $ref: '#/components/schemas/StartedWhen'
+        note:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+    ReportResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OutageReport'
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+  responses:
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid report data.
+              code: INVALID_INPUT
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: API key issued by SpectrumOutage.us. Request at usspectrumoutage@gmail.com
+externalDocs:
+  description: Full API documentation
+  url: https://api.spectrumoutage.us
