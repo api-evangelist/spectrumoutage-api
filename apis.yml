@@ -28,18 +28,18 @@ created: '2026-07-17'
 modified: '2026-08-11'
 specificationVersion: '0.23'
 tags:
-  - Spectrum
-  - outage
-  - Internet
-  - TV
-  - Phone
+  - spectrum
+  - Outage
+  - internet
+  - tv
+  - phone
   - Monitoring
   - Status
-  - ZIP Code
-  - Telecom
-  - ISP
+  - zip-code
+  - telecom
+  - isp
   - network-status
-  - Crowdsourced
+  - crowdsourced
 tags_raw:
   - spectrum
   - outage
