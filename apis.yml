@@ -22,6 +22,21 @@ deliveryModel:
   - repository-unlicensed
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: free
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Free · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - rate-limits
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://spectrumoutage.us/icons/icon-192.png
 url: https://raw.githubusercontent.com/api-evangelist/spectrumoutage-api/refs/heads/main/apis.yml
 created: '2026-07-17'
