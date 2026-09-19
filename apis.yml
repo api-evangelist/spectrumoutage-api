@@ -53,7 +53,7 @@ tags:
   - ZIP Code
   - Telecom
   - ISP
-  - network-status
+  - Network Status
   - Crowdsourced
 tags_raw:
   - spectrum
@@ -75,6 +75,8 @@ apis:
   humanURL: https://api.spectrumoutage.us
   baseURL: https://spectrumoutage.us/api/v1
   tags:
+  - Location
+  tags_raw:
   - Locations
   properties:
   - type: OpenAPI
