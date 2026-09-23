@@ -5,7 +5,7 @@ info:
   description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
 
 
-    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+    Data is community-sourced from user reports on spectrum outage.
 
     Not affiliated with Charter Communications or Spectrum™.
 
@@ -13,9 +13,7 @@ info:
     **Rate limit:** 100 requests per minute per API key.
 
 
-    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
-
-    '
+    **Get an API key:** Email usspectrumoutage@gmail.com'
   contact:
     name: spectrum outage
     email: usspectrumoutage@gmail.com
@@ -93,46 +91,51 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
-  parameters:
-    page:
-      name: page
-      in: query
-      description: Page number (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    pageSize:
-      name: pageSize
-      in: query
-      description: Results per page (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 50
+  responses:
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid report data.
+              code: INVALID_INPUT
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-          required:
-          - message
-    ReportsListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OutageReport'
-        meta:
-          $ref: '#/components/schemas/PaginationMeta'
     CreateReportInput:
       type: object
       required:
@@ -152,13 +155,15 @@ components:
           type: string
           maxLength: 500
           description: Optional short note
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
+    ReportsListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutageReport'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
     StartedWhen:
       type: string
       enum:
@@ -168,6 +173,18 @@ components:
       - today
       - yesterday
       - days_ago
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
     OutageReport:
       type: object
       properties:
@@ -186,11 +203,6 @@ components:
         createdAt:
           type: string
           format: date-time
-    ReportResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/OutageReport'
     PaginationMeta:
       type: object
       properties:
@@ -202,50 +214,36 @@ components:
           type: integer
         totalPages:
           type: integer
-  responses:
-    RateLimited:
-      description: Rate limit exceeded (100 req/min)
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Rate limit exceeded. Max 100 requests per minute.
-    Forbidden:
-      description: Invalid API key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid API key.
-    BadRequest:
-      description: Invalid request body or parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid report data.
-              code: INVALID_INPUT
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing Authorization header
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: 'Missing API key. Send Authorization: Bearer <key>'
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    ReportResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OutageReport'
+  parameters:
+    pageSize:
+      name: pageSize
+      in: query
+      description: Results per page (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
+    page:
+      name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
   securitySchemes:
     bearerAuth:
       type: http

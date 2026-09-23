@@ -5,7 +5,7 @@ info:
   description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
 
 
-    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+    Data is community-sourced from user reports on spectrum outage.
 
     Not affiliated with Charter Communications or Spectrum™.
 
@@ -13,9 +13,7 @@ info:
     **Rate limit:** 100 requests per minute per API key.
 
 
-    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
-
-    '
+    **Get an API key:** Email usspectrumoutage@gmail.com'
   contact:
     name: spectrum outage
     email: usspectrumoutage@gmail.com
@@ -57,6 +55,22 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
     DashboardStats:
       type: object
       properties:
@@ -115,6 +129,11 @@ components:
         lastUpdated:
           type: string
           format: date-time
+    StatsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DashboardStats'
     ErrorResponse:
       type: object
       properties:
@@ -127,22 +146,6 @@ components:
               type: string
           required:
           - message
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
-    StartedWhen:
-      type: string
-      enum:
-      - just_now
-      - last_hour
-      - few_hours
-      - today
-      - yesterday
-      - days_ago
     OutageReport:
       type: object
       properties:
@@ -161,11 +164,6 @@ components:
         createdAt:
           type: string
           format: date-time
-    StatsResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/DashboardStats'
   responses:
     RateLimited:
       description: Rate limit exceeded (100 req/min)
@@ -176,6 +174,12 @@ components:
           example:
             error:
               message: Rate limit exceeded. Max 100 requests per minute.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     Forbidden:
       description: Invalid API key
       content:
@@ -185,12 +189,6 @@ components:
           example:
             error:
               message: Invalid API key.
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Missing Authorization header
       content:

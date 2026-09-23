@@ -5,7 +5,7 @@ info:
   description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
 
 
-    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+    Data is community-sourced from user reports on spectrum outage.
 
     Not affiliated with Charter Communications or Spectrum™.
 
@@ -13,9 +13,7 @@ info:
     **Rate limit:** 100 requests per minute per API key.
 
 
-    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
-
-    '
+    **Get an API key:** Email usspectrumoutage@gmail.com'
   contact:
     name: spectrum outage
     email: usspectrumoutage@gmail.com
@@ -69,6 +67,50 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
+  responses:
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid report data.
+              code: INVALID_INPUT
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
   schemas:
     ErrorResponse:
       type: object
@@ -97,50 +139,6 @@ components:
               - 1h
               - 24h
               - 48h
-  responses:
-    RateLimited:
-      description: Rate limit exceeded (100 req/min)
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Rate limit exceeded. Max 100 requests per minute.
-    Forbidden:
-      description: Invalid API key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid API key.
-    BadRequest:
-      description: Invalid request body or parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid report data.
-              code: INVALID_INPUT
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Missing Authorization header
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: 'Missing API key. Send Authorization: Bearer <key>'
   securitySchemes:
     bearerAuth:
       type: http

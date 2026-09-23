@@ -1,0 +1,28 @@
+{
+  "provider": "spectrumoutage-api",
+  "sources": [
+    "_original/spectrumoutage-api-openapi-original.yml"
+  ],
+  "outputs": [
+    "spectrumoutage-api-locations-api-openapi.yml",
+    "spectrumoutage-api-map-api-openapi.yml",
+    "spectrumoutage-api-reports-api-openapi.yml",
+    "spectrumoutage-api-stats-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "spectrumoutage-api-openapi-original.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/spectrumoutage-api-openapi.yml: archived document superseded by a larger archived document",
+    "spectrumoutage-api-locations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spectrumoutage-api-map-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spectrumoutage-api-reports-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "spectrumoutage-api-stats-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

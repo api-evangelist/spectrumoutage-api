@@ -5,7 +5,7 @@ info:
   description: 'REST API for live Spectrum internet, TV, and phone outage data across the United States.
 
 
-    Data is community-sourced from user reports on [spectrum outage](https://spectrumoutage.us).
+    Data is community-sourced from user reports on spectrum outage.
 
     Not affiliated with Charter Communications or Spectrum™.
 
@@ -13,9 +13,7 @@ info:
     **Rate limit:** 100 requests per minute per API key.
 
 
-    **Get an API key:** Email [usspectrumoutage@gmail.com](mailto:usspectrumoutage@gmail.com?subject=API%20Key%20Request)
-
-    '
+    **Get an API key:** Email usspectrumoutage@gmail.com'
   contact:
     name: spectrum outage
     email: usspectrumoutage@gmail.com
@@ -135,22 +133,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    CityNotFound:
-      description: City slug not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: City not found.
-              code: CITY_NOT_FOUND
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
     Unauthorized:
       description: Missing Authorization header
       content:
@@ -160,15 +142,6 @@ components:
           example:
             error:
               message: 'Missing API key. Send Authorization: Bearer <key>'
-    Forbidden:
-      description: Invalid API key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid API key.
     StateNotFound:
       description: State slug not found
       content:
@@ -179,15 +152,6 @@ components:
             error:
               message: State not found.
               code: STATE_NOT_FOUND
-    RateLimited:
-      description: Rate limit exceeded (100 req/min)
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Rate limit exceeded. Max 100 requests per minute.
     BadRequest:
       description: Invalid request body or parameters
       content:
@@ -198,16 +162,41 @@ components:
             error:
               message: Invalid report data.
               code: INVALID_INPUT
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    CityNotFound:
+      description: City slug not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: City not found.
+              code: CITY_NOT_FOUND
   parameters:
-    zipCode:
-      name: zip
-      in: path
-      required: true
-      description: 5-digit US ZIP code
-      schema:
-        type: string
-        pattern: ^\d{5}$
-        example: '90210'
     citySlug:
       name: slug
       in: path
@@ -224,6 +213,15 @@ components:
       schema:
         type: string
         example: california
+    zipCode:
+      name: zip
+      in: path
+      required: true
+      description: 5-digit US ZIP code
+      schema:
+        type: string
+        pattern: ^\d{5}$
+        example: '90210'
   schemas:
     ErrorResponse:
       type: object
@@ -237,13 +235,23 @@ components:
               type: string
           required:
           - message
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
+    StateResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          description: State page data including stats, featured cities, and map clusters
+    StatesListResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          description: State slug to report count mapping
+    ZipResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ZipStatus'
     StartedWhen:
       type: string
       enum:
@@ -253,6 +261,26 @@ components:
       - today
       - yesterday
       - days_ago
+    CityResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          description: City page data including stats, map clusters, and reports
+    ZipStatus:
+      type: object
+      properties:
+        zipCode:
+          type: string
+        status:
+          type: string
+          enum:
+          - issues_reported
+          - all_clear
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutageReport'
     OutageReport:
       type: object
       properties:
@@ -271,43 +299,13 @@ components:
         createdAt:
           type: string
           format: date-time
-    StatesListResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          description: State slug to report count mapping
-    ZipResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ZipStatus'
-    CityResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          description: City page data including stats, map clusters, and reports
-    StateResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          description: State page data including stats, featured cities, and map clusters
-    ZipStatus:
-      type: object
-      properties:
-        zipCode:
-          type: string
-        status:
-          type: string
-          enum:
-          - issues_reported
-          - all_clear
-        reports:
-          type: array
-          items:
-            $ref: '#/components/schemas/OutageReport'
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
   securitySchemes:
     bearerAuth:
       type: http
