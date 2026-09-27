@@ -11,6 +11,10 @@ description: >-
   dataset mirrored to GitHub, Hugging Face, Kaggle and Figshare.
 deliveryModel:
   model: unknown
+  license_evidence:
+    repo: usspectrumoutage-us/spectrum-outage-api
+    spdx: none
+    stars: 2
   open_source: unknown
   commercial: true
   callable_host: true
@@ -20,7 +24,7 @@ deliveryModel:
   - openapi
   - pricing
   - repository-unlicensed
-  generated: '2026-08-28'
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: free
@@ -51,7 +55,7 @@ tags:
   - Monitoring
   - Status
   - ZIP Code
-  - Telecom
+  - Telecommunications
   - ISP
   - Network Status
   - Crowdsourced
@@ -68,6 +72,7 @@ tags_raw:
   - isp
   - network-status
   - crowdsourced
+  - Telecom
 apis:
 - aid: spectrumoutage-api:spectrumoutage-api-locations-api
   name: SpectrumOutage API Locations API
@@ -95,6 +100,8 @@ apis:
   humanURL: https://api.spectrumoutage.us
   baseURL: https://spectrumoutage.us/api/v1
   tags:
+  - Maps
+  tags_raw:
   - Map
   properties:
   - type: OpenAPI
