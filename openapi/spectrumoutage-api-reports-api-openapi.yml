@@ -92,11 +92,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    ReportResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/OutageReport'
     OutageReport:
       type: object
       properties:
@@ -115,6 +110,31 @@ components:
         createdAt:
           type: string
           format: date-time
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
+    ReportResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OutageReport'
     ReportsListResponse:
       type: object
       properties:
@@ -124,18 +144,6 @@ components:
             $ref: '#/components/schemas/OutageReport'
         meta:
           $ref: '#/components/schemas/PaginationMeta'
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-          required:
-          - message
     CreateReportInput:
       type: object
       required:
@@ -162,70 +170,18 @@ components:
       - tv
       - phone
       - all
-    StartedWhen:
-      type: string
-      enum:
-      - just_now
-      - last_hour
-      - few_hours
-      - today
-      - yesterday
-      - days_ago
-    PaginationMeta:
+    ErrorResponse:
       type: object
       properties:
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
-  responses:
-    BadRequest:
-      description: Invalid request body or parameters
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid report data.
-              code: INVALID_INPUT
-    Unauthorized:
-      description: Missing Authorization header
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: 'Missing API key. Send Authorization: Bearer <key>'
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Rate limit exceeded (100 req/min)
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Rate limit exceeded. Max 100 requests per minute.
-    Forbidden:
-      description: Invalid API key
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid API key.
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
   parameters:
     page:
       name: page
@@ -244,6 +200,50 @@ components:
         minimum: 1
         maximum: 100
         default: 50
+  responses:
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
+    Forbidden:
+      description: Invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid report data.
+              code: INVALID_INPUT
   securitySchemes:
     bearerAuth:
       type: http

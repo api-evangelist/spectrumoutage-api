@@ -73,25 +73,6 @@ components:
         createdAt:
           type: string
           format: date-time
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-          required:
-          - message
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
     StartedWhen:
       type: string
       enum:
@@ -101,6 +82,11 @@ components:
       - today
       - yesterday
       - days_ago
+    StatsResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/DashboardStats'
     DashboardStats:
       type: object
       properties:
@@ -159,21 +145,32 @@ components:
         lastUpdated:
           type: string
           format: date-time
-    StatsResponse:
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    ErrorResponse:
       type: object
       properties:
-        data:
-          $ref: '#/components/schemas/DashboardStats'
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
   responses:
-    Unauthorized:
-      description: Missing Authorization header
+    ServerError:
+      description: Server error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: 'Missing API key. Send Authorization: Bearer <key>'
     RateLimited:
       description: Rate limit exceeded (100 req/min)
       content:
@@ -183,12 +180,15 @@ components:
           example:
             error:
               message: Rate limit exceeded. Max 100 requests per minute.
-    ServerError:
-      description: Server error
+    Unauthorized:
+      description: Missing Authorization header
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
     Forbidden:
       description: Invalid API key
       content:
