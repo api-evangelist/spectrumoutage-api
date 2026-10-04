@@ -92,6 +92,59 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
+    ReportResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/OutageReport'
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
+    ReportsListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutageReport'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
     OutageReport:
       type: object
       properties:
@@ -110,40 +163,6 @@ components:
         createdAt:
           type: string
           format: date-time
-    PaginationMeta:
-      type: object
-      properties:
-        page:
-          type: integer
-        pageSize:
-          type: integer
-        total:
-          type: integer
-        totalPages:
-          type: integer
-    StartedWhen:
-      type: string
-      enum:
-      - just_now
-      - last_hour
-      - few_hours
-      - today
-      - yesterday
-      - days_ago
-    ReportResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/OutageReport'
-    ReportsListResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OutageReport'
-        meta:
-          $ref: '#/components/schemas/PaginationMeta'
     CreateReportInput:
       type: object
       required:
@@ -163,59 +182,7 @@ components:
           type: string
           maxLength: 500
           description: Optional short note
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-          required:
-          - message
-  parameters:
-    page:
-      name: page
-      in: query
-      description: Page number (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    pageSize:
-      name: pageSize
-      in: query
-      description: Results per page (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 50
   responses:
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Rate limit exceeded (100 req/min)
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Rate limit exceeded. Max 100 requests per minute.
     Unauthorized:
       description: Missing Authorization header
       content:
@@ -225,6 +192,21 @@ components:
           example:
             error:
               message: 'Missing API key. Send Authorization: Bearer <key>'
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     Forbidden:
       description: Invalid API key
       content:
@@ -244,6 +226,24 @@ components:
             error:
               message: Invalid report data.
               code: INVALID_INPUT
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Page number (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    pageSize:
+      name: pageSize
+      in: query
+      description: Results per page (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 50
   securitySchemes:
     bearerAuth:
       type: http

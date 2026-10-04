@@ -55,24 +55,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    OutageReport:
-      type: object
-      properties:
-        id:
-          type: integer
-        zipCode:
-          type: string
-        serviceType:
-          $ref: '#/components/schemas/ServiceType'
-        startedWhen:
-          $ref: '#/components/schemas/StartedWhen'
-        note:
-          type:
-          - string
-          - 'null'
-        createdAt:
-          type: string
-          format: date-time
     StartedWhen:
       type: string
       enum:
@@ -82,11 +64,25 @@ components:
       - today
       - yesterday
       - days_ago
-    StatsResponse:
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    ErrorResponse:
       type: object
       properties:
-        data:
-          $ref: '#/components/schemas/DashboardStats'
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
     DashboardStats:
       type: object
       properties:
@@ -145,41 +141,30 @@ components:
         lastUpdated:
           type: string
           format: date-time
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
-    ErrorResponse:
+    StatsResponse:
       type: object
       properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-          required:
-          - message
+        data:
+          $ref: '#/components/schemas/DashboardStats'
+    OutageReport:
+      type: object
+      properties:
+        id:
+          type: integer
+        zipCode:
+          type: string
+        serviceType:
+          $ref: '#/components/schemas/ServiceType'
+        startedWhen:
+          $ref: '#/components/schemas/StartedWhen'
+        note:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
   responses:
-    ServerError:
-      description: Server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    RateLimited:
-      description: Rate limit exceeded (100 req/min)
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Rate limit exceeded. Max 100 requests per minute.
     Unauthorized:
       description: Missing Authorization header
       content:
@@ -189,6 +174,21 @@ components:
           example:
             error:
               message: 'Missing API key. Send Authorization: Bearer <key>'
+    RateLimited:
+      description: Rate limit exceeded (100 req/min)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Rate limit exceeded. Max 100 requests per minute.
+    ServerError:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     Forbidden:
       description: Invalid API key
       content:

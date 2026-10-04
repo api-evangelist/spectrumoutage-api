@@ -133,6 +133,15 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
     OutageReport:
       type: object
       properties:
@@ -157,21 +166,6 @@ components:
         data:
           type: object
           description: City page data including stats, map clusters, and reports
-    StateResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          description: State page data including stats, featured cities, and map clusters
-    StartedWhen:
-      type: string
-      enum:
-      - just_now
-      - last_hour
-      - few_hours
-      - today
-      - yesterday
-      - days_ago
     ZipStatus:
       type: object
       properties:
@@ -186,24 +180,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OutageReport'
-    StatesListResponse:
-      type: object
-      properties:
-        data:
-          type: object
-          description: State slug to report count mapping
-    ZipResponse:
-      type: object
-      properties:
-        data:
-          $ref: '#/components/schemas/ZipStatus'
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
     ErrorResponse:
       type: object
       properties:
@@ -216,42 +192,37 @@ components:
               type: string
           required:
           - message
-  parameters:
-    zipCode:
-      name: zip
-      in: path
-      required: true
-      description: 5-digit US ZIP code
-      schema:
-        type: string
-        pattern: ^\d{5}$
-        example: '90210'
-    stateSlug:
-      name: slug
-      in: path
-      required: true
-      description: State slug (e.g. california, texas, new-york)
-      schema:
-        type: string
-        example: california
-    citySlug:
-      name: slug
-      in: path
-      required: true
-      description: City slug (e.g. los-angeles, new-york-city, charlotte)
-      schema:
-        type: string
-        example: los-angeles
+    ZipResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ZipStatus'
+    StatesListResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          description: State slug to report count mapping
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    StateResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          description: State page data including stats, featured cities, and map clusters
   responses:
-    Forbidden:
-      description: Invalid API key
+    ServerError:
+      description: Server error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: Invalid API key.
     RateLimited:
       description: Rate limit exceeded (100 req/min)
       content:
@@ -261,15 +232,6 @@ components:
           example:
             error:
               message: Rate limit exceeded. Max 100 requests per minute.
-    Unauthorized:
-      description: Missing Authorization header
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: 'Missing API key. Send Authorization: Bearer <key>'
     CityNotFound:
       description: City slug not found
       content:
@@ -280,12 +242,24 @@ components:
             error:
               message: City not found.
               code: CITY_NOT_FOUND
-    ServerError:
-      description: Server error
+    Forbidden:
+      description: Invalid API key
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: Invalid API key.
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
     StateNotFound:
       description: State slug not found
       content:
@@ -306,6 +280,32 @@ components:
             error:
               message: Invalid report data.
               code: INVALID_INPUT
+  parameters:
+    citySlug:
+      name: slug
+      in: path
+      required: true
+      description: City slug (e.g. los-angeles, new-york-city, charlotte)
+      schema:
+        type: string
+        example: los-angeles
+    zipCode:
+      name: zip
+      in: path
+      required: true
+      description: 5-digit US ZIP code
+      schema:
+        type: string
+        pattern: ^\d{5}$
+        example: '90210'
+    stateSlug:
+      name: slug
+      in: path
+      required: true
+      description: State slug (e.g. california, texas, new-york)
+      schema:
+        type: string
+        example: california
   securitySchemes:
     bearerAuth:
       type: http
