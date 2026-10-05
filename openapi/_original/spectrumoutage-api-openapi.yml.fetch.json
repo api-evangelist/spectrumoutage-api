@@ -1,0 +1,12 @@
+{
+ "url": "https://api.spectrumoutage.us/openapi.yaml",
+ "requested_url": "https://api.spectrumoutage.us/openapi.yaml",
+ "status": 200,
+ "content_type": "text/yaml",
+ "bytes": 15379,
+ "sha256": "d07b09c8194587af6dfb879c9562fe32bd60d06ccb1267c40907e818a0a6be68",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
