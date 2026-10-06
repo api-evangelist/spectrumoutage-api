@@ -44,7 +44,7 @@ accessModel:
 image: https://spectrumoutage.us/icons/icon-192.png
 url: https://raw.githubusercontent.com/api-evangelist/spectrumoutage-api/refs/heads/main/apis.yml
 created: '2026-07-17'
-modified: '2026-08-11'
+modified: '2026-10-06'
 specificationVersion: '0.23'
 tags:
   - Spectrum
@@ -160,6 +160,8 @@ generated:
   confidence: 90
   at: '2026-07-17T11:26:02.897Z'
 common:
+- url: https://spectrumoutage.us/blog
+  type: Blog
 - type: Website
   url: https://www.spectrumoutage.us/
 - type: AgentSkill
