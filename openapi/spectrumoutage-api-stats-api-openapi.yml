@@ -55,34 +55,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   schemas:
-    StartedWhen:
-      type: string
-      enum:
-      - just_now
-      - last_hour
-      - few_hours
-      - today
-      - yesterday
-      - days_ago
-    ServiceType:
-      type: string
-      enum:
-      - internet
-      - tv
-      - phone
-      - all
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          type: object
-          properties:
-            message:
-              type: string
-            code:
-              type: string
-          required:
-          - message
     DashboardStats:
       type: object
       properties:
@@ -141,11 +113,39 @@ components:
         lastUpdated:
           type: string
           format: date-time
+    ServiceType:
+      type: string
+      enum:
+      - internet
+      - tv
+      - phone
+      - all
+    StartedWhen:
+      type: string
+      enum:
+      - just_now
+      - last_hour
+      - few_hours
+      - today
+      - yesterday
+      - days_ago
     StatsResponse:
       type: object
       properties:
         data:
           $ref: '#/components/schemas/DashboardStats'
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+          required:
+          - message
     OutageReport:
       type: object
       properties:
@@ -165,15 +165,6 @@ components:
           type: string
           format: date-time
   responses:
-    Unauthorized:
-      description: Missing Authorization header
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            error:
-              message: 'Missing API key. Send Authorization: Bearer <key>'
     RateLimited:
       description: Rate limit exceeded (100 req/min)
       content:
@@ -183,6 +174,15 @@ components:
           example:
             error:
               message: Rate limit exceeded. Max 100 requests per minute.
+    Unauthorized:
+      description: Missing Authorization header
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            error:
+              message: 'Missing API key. Send Authorization: Bearer <key>'
     ServerError:
       description: Server error
       content:
