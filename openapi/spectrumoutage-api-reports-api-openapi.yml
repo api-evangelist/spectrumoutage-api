@@ -252,3 +252,9 @@ components:
 externalDocs:
   description: Full API documentation
   url: https://api.spectrumoutage.us
+x-provenance:
+  method: harvested
+  publisher: SpectrumOutage API
+  source: https://api.spectrumoutage.us/openapi.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
