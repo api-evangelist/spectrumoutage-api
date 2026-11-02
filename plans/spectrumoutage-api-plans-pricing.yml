@@ -1,0 +1,43 @@
+# Pricing transcribed from the provider's own page — see provenance. Numbers are quoted, not derived.
+generated: '2026-10-28'
+method: searched
+source: https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+sources:
+- https://rapidapi.com/usspectrumoutageus/api/spectrumoutage
+provenance:
+  tool: engine/economics/harvest_pricing.py
+  run: 20261028T161713
+  grounding: every price_text was found verbatim in the fetched page text
+audience: developer-api
+pricing_basis: free
+delivery:
+  delivery: managed
+  method: page
+  read: '2026-10-28'
+published: true
+note: RapidAPI listing shows a single Free BASIC plan at $0.00; API docs state a per-key rate limit.
+plan_count: 1
+currency: USD
+plans:
+- name: BASIC
+  price_text: $0.00
+  price: 0
+  currency: USD
+  period: month
+rate_limit_statements:
+- 100 requests per minute per API key. Exceeding the limit returns 429 Too Many Requests.
+- pageSize (max 100)
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - free
+  units: []
+  plans:
+  - name: BASIC
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods:
+    - month
